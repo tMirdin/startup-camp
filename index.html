@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>juniors.ai — сделай свой AI-продукт за 2 недели</title>
+<link rel="icon" href="juniors-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0F18;
+    --bg-soft:#14151F;
+    --card:#1A1B29;
+    --card-hi:#212236;
+    --line:rgba(255,255,255,.09);
+    --line-strong:rgba(255,255,255,.16);
+    --ink:#F4F3FB;
+    --muted:#9B9BB4;
+    --accent:#8B8DFF;
+    --accent-soft:rgba(139,141,255,.14);
+    --cta-bg:#EEF0FD;
+    --cta-text:#12131C;
+    --blue:#5EA8FF; --blue-soft:rgba(94,168,255,.14);
+    --pink:#F472B6; --pink-soft:rgba(244,114,182,.14);
+    --green:#33D69F; --green-soft:rgba(51,214,159,.14);
+    --radius:20px;
+    --shadow:0 20px 50px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  h1,h2,h3,.display{ font-family:'Unbounded',sans-serif; line-height:1.14; margin:0; letter-spacing:-0.01em; color:var(--ink); }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  p{margin:0;} img{max-width:100%;display:block;} a{color:inherit;text-decoration:none;} ul{margin:0;padding:0;list-style:none;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px;}
+  section{padding:64px 0;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent); background:var(--accent-soft); padding:7px 14px; border-radius:999px;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:15.5px;
+    padding:15px 26px; border-radius:14px; border:none; cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--cta-bg); color:var(--cta-text); box-shadow:0 10px 26px rgba(139,141,255,.18);}
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(139,141,255,.28); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line-strong); }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+  .section-head{ max-width:640px; margin-bottom:36px; }
+  .section-head h2{ font-size:clamp(26px,4.4vw,38px); }
+  .section-head p{ color:var(--muted); font-size:16.5px; margin-top:12px; line-height:1.55; }
+  .kicker{ color:var(--accent); font-weight:700; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.05em; text-transform:uppercase; }
+
+  /* ===== HEADER ===== */
+  header{ position:sticky; top:0; z-index:100; background:rgba(14,15,24,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .nav{ display:flex; align-items:center; justify-content:space-between; padding:13px 20px; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'Unbounded'; font-weight:700; font-size:17px; }
+  .logo-mark{ width:34px;height:34px;border-radius:10px; overflow:hidden; background:#0E0F18; border:1px solid var(--line-strong); flex-shrink:0; }
+  .logo-mark img{ width:100%; height:100%; object-fit:cover; }
+  .logo small{ display:block; font-family:'Inter'; font-weight:500; font-size:11px; color:var(--muted); margin-top:1px;}
+  .nav-links{ display:none; align-items:center; gap:30px; font-weight:600; font-size:14.5px; }
+  .nav-links a{ color:var(--ink); opacity:.7; transition:opacity .15s; }
+  .nav-links a:hover{ opacity:1; color:var(--accent); }
+  .nav-cta{ display:none; }
+  .burger{ display:flex; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:8px; }
+  .burger span{ width:22px; height:2.5px; background:var(--ink); border-radius:2px; }
+  .mobile-menu{ max-height:0; overflow:hidden; background:var(--bg-soft); border-bottom:1px solid var(--line); transition:max-height .3s ease; }
+  .mobile-menu.open{ max-height:400px; }
+  .mobile-menu-inner{ padding:8px 20px 22px; display:flex; flex-direction:column; gap:4px;}
+  .mobile-menu a{ padding:12px 4px; font-weight:600; border-bottom:1px solid var(--line); }
+  .mobile-menu .btn{ margin-top:14px; width:100%; }
+  @media(min-width:900px){ .nav{padding:15px 20px;} .nav-links{display:flex;} .nav-cta{display:inline-flex;} .burger{display:none;} }
+
+  /* ===== HERO ===== */
+  .hero{ padding:56px 0 20px; position:relative; }
+  .hero::before{ content:""; position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:800px; height:500px;
+    background:radial-gradient(closest-side, rgba(139,141,255,.16), transparent); pointer-events:none; }
+  .hero-grid{ display:flex; flex-direction:column; gap:40px; position:relative; }
+  .hero-copy h1{ font-size:clamp(32px,6.4vw,58px); margin-top:18px; }
+  .hero-copy h1 span{ color:var(--accent); }
+  .hero-copy .sub{ font-size:17.5px; color:var(--muted); margin-top:18px; line-height:1.6; max-width:520px;}
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+  .hero-stats{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:36px; max-width:460px;}
+  .stat{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px 18px; }
+  .stat b{ font-family:'Unbounded'; font-size:22px; display:block; }
+  .stat span{ color:var(--muted); font-size:13px; }
+
+  .hero-visual{ position:relative; }
+  .window{ background:#08090F; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); max-width:460px; margin:0 auto; border:1px solid var(--line-strong); }
+  .window-bar{ display:flex; align-items:center; gap:6px; padding:12px 14px; background:#131420; }
+  .window-bar i{ width:10px;height:10px;border-radius:50%; background:#33344a; }
+  .window-bar span{ margin-left:8px; color:#6f6f8a; font-family:'JetBrains Mono'; font-size:11.5px; }
+  .window-body{ padding:20px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#c9c9e0; line-height:1.85; min-height:230px;}
+  .window-body .l1{color:#33D69F;}
+  .window-body .l2{color:#6f6f8a;}
+  .window-body .cursor{ display:inline-block; width:7px; height:14px; background:var(--accent); vertical-align:middle; animation:blink 1s step-end infinite; }
+  @keyframes blink{50%{opacity:0;}}
+  .badge-live{ position:absolute; top:-14px; right:16px; background:var(--accent); color:#0E0F18;
+    font-family:'JetBrains Mono'; font-size:11.5px; font-weight:700; padding:7px 12px; border-radius:999px;
+    display:flex; align-items:center; gap:6px; box-shadow:0 8px 20px rgba(139,141,255,.35); }
+  .badge-live i{ width:6px;height:6px;border-radius:50%; background:#0E0F18; animation:blink 1.2s step-end infinite;}
+  @media(min-width:960px){ .hero-grid{flex-direction:row;align-items:center;gap:20px;} .hero-copy{flex:1.05;} .hero-visual{flex:.95;} }
+
+  /* ===== PROBLEM ===== */
+  .problem{ background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .pain-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
+  .pain-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px; display:flex; align-items:center; gap:14px; font-weight:600; font-size:15.5px; }
+  .pain-card .ic{ font-size:22px; flex-shrink:0; }
+  @media(min-width:700px){ .pain-grid{ grid-template-columns:1fr 1fr; } }
+
+  /* ===== DIAGNOSTICS ===== */
+  .diag-flow{ display:grid; grid-template-columns:1fr; gap:16px; }
+  .diag-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:26px; }
+  .diag-card .step{ font-family:'JetBrains Mono'; font-size:12px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:.05em;}
+  .diag-card h3{ font-size:19px; margin-top:10px; }
+  .diag-card p{ color:var(--muted); font-size:14.5px; margin-top:8px; line-height:1.6; }
+  @media(min-width:860px){ .diag-flow{ grid-template-columns:repeat(3,1fr); } }
+
+  /* ===== TRACKS ===== */
+  .tracks-grid{ display:grid; grid-template-columns:1fr; gap:18px; }
+  .track-card{ border-radius:var(--radius); padding:28px; position:relative; overflow:hidden; border:1px solid var(--line); background:var(--card); }
+  .track-card .tag{ display:inline-block; font-family:'JetBrains Mono'; font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; margin-bottom:14px; }
+  .track-card h3{ font-size:23px; }
+  .track-card p{ color:var(--muted); font-size:14.5px; margin-top:10px; line-height:1.6; }
+  .track-apps .tag{ background:var(--blue-soft); color:var(--blue); }
+  .track-games .tag{ background:var(--pink-soft); color:var(--pink); }
+  .track-ai .tag{ background:var(--green-soft); color:var(--green); }
+  .track-card .big-emoji{ position:absolute; right:-6px; bottom:-14px; font-size:78px; opacity:.08; }
+  @media(min-width:860px){ .tracks-grid{ grid-template-columns:repeat(3,1fr); } }
+
+  /* ===== ROLES ===== */
+  .roles-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
+  .role-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px; }
+  .role-card .num{ font-family:'JetBrains Mono'; font-size:12px; color:var(--accent); font-weight:700; }
+  .role-card h4{ font-family:'Unbounded'; font-size:15.5px; margin-top:6px; }
+  .role-card p{ color:var(--muted); font-size:13.5px; margin-top:6px; line-height:1.5; }
+  @media(min-width:640px){ .roles-grid{ grid-template-columns:1fr 1fr; } }
+  @media(min-width:980px){ .roles-grid{ grid-template-columns:repeat(4,1fr); } }
+
+  /* ===== PROGRAM TIMELINE ===== */
+  .timeline{ position:relative; }
+  .timeline::before{ content:""; position:absolute; left:19px; top:6px; bottom:6px; width:2px;
+    background:repeating-linear-gradient(to bottom, var(--line-strong) 0 6px, transparent 6px 12px); }
+  .tl-item{ position:relative; padding-left:56px; margin-bottom:22px; }
+  .tl-dot{ position:absolute; left:0; top:0; width:40px; height:40px; border-radius:12px; background:var(--card-hi); border:1px solid var(--line-strong);
+    color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-size:12px; font-weight:700; z-index:1; }
+  .tl-item.demo .tl-dot{ background:var(--accent); color:#0E0F18; border-color:var(--accent); }
+  .tl-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .tl-card .date{ font-family:'JetBrains Mono'; font-size:11.5px; color:var(--muted); }
+  .tl-card h4{ font-family:'Unbounded'; font-size:15.5px; margin-top:4px; }
+  .tl-card p{ color:var(--muted); font-size:13.5px; margin-top:6px; line-height:1.55; }
+  .week-label{ font-family:'JetBrains Mono'; font-size:12px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.06em; margin:26px 0 14px 0; padding-left:56px; }
+  .week-label:first-child{ margin-top:0; }
+
+  /* ===== FEATURES / TRANSFORM ===== */
+  .split{ display:grid; grid-template-columns:1fr; gap:16px; }
+  @media(min-width:860px){ .split{ grid-template-columns:1fr 1fr; } }
+  .before,.after{ border-radius:var(--radius); padding:26px; border:1px solid var(--line); }
+  .before{ background:rgba(244,114,182,.06); }
+  .after{ background:rgba(51,214,159,.07); }
+  .before h3,.after h3{ font-size:18px; margin-bottom:14px; }
+  .before li,.after li{ display:flex; gap:10px; padding:8px 0; font-size:14.5px; font-weight:500; }
+  .before li b{ color:var(--pink); } .after li b{ color:var(--green); }
+
+  .feat-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
+  .feat-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .feat-card .ic{ font-size:24px; }
+  .feat-card h4{ font-family:'Unbounded'; font-size:15px; margin-top:10px; }
+  .feat-card p{ color:var(--muted); font-size:13.5px; margin-top:6px; line-height:1.55; }
+  @media(min-width:640px){ .feat-grid{ grid-template-columns:1fr 1fr; } }
+  @media(min-width:980px){ .feat-grid{ grid-template-columns:repeat(3,1fr); } }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:9px; }
+  .chip{ background:var(--accent-soft); color:var(--accent); font-weight:600; font-size:13.5px; padding:9px 15px; border-radius:999px; }
+
+  /* ===== FORMAT TABLE ===== */
+  .format-table{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .format-row{ background:var(--card); display:grid; grid-template-columns:140px 1fr; gap:6px; padding:16px 18px; }
+  .format-row .k{ font-family:'JetBrains Mono'; font-size:12px; font-weight:700; color:var(--accent); text-transform:uppercase; }
+  .format-row .v{ font-size:14.5px; font-weight:500; color:var(--ink); }
+  @media(min-width:640px){ .format-row{ grid-template-columns:180px 1fr; } }
+
+  /* ===== TEAM ===== */
+  .team-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
+  .team-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .team-card .avatar{ width:46px;height:46px;border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--pink));
+    display:flex; align-items:center; justify-content:center; color:#0E0F18; font-family:'Unbounded'; font-weight:700; margin-bottom:12px; }
+  .team-card h4{ font-family:'Unbounded'; font-size:15.5px; }
+  .team-card .role{ color:var(--accent); font-size:12.5px; font-weight:700; margin-top:3px; font-family:'JetBrains Mono';}
+  .team-card p{ color:var(--muted); font-size:13.5px; margin-top:8px; line-height:1.55; }
+  @media(min-width:640px){ .team-grid{ grid-template-columns:1fr 1fr; } }
+  @media(min-width:980px){ .team-grid{ grid-template-columns:repeat(4,1fr); } }
+
+  /* ===== FAQ ===== */
+  .faq-item{ border-bottom:1px solid var(--line); padding:18px 0; }
+  .faq-q{ display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-weight:700; font-size:15.5px; gap:14px;}
+  .faq-q .plus{ font-family:'JetBrains Mono'; font-size:20px; color:var(--accent); flex-shrink:0; transition:transform .2s; }
+  .faq-item.open .plus{ transform:rotate(45deg); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+  .faq-a p{ color:var(--muted); font-size:14.5px; line-height:1.6; padding-top:12px; }
+
+  /* ===== APPLY ===== */
+  .apply{ background:linear-gradient(160deg,#171830,#0E0F18); border:1px solid var(--line-strong); border-radius:28px; margin:0 20px; padding:44px 24px; position:relative; overflow:hidden;}
+  .apply::before{ content:""; position:absolute; inset:0; background:radial-gradient(600px 300px at 90% -10%, rgba(139,141,255,.22), transparent); }
+  .apply-inner{ position:relative; display:grid; grid-template-columns:1fr; gap:28px; max-width:1000px; margin:0 auto;}
+  .apply h2{ font-size:clamp(24px,4.5vw,34px); }
+  .apply .sub{ color:var(--muted); margin-top:12px; font-size:15.5px; line-height:1.6; }
+  .form{ background:var(--ink); border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:12px; }
+  .form input{ width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid #E2E1F0; font-family:'Inter'; font-size:15px; color:var(--cta-text); background:#fff; }
+  .form input:focus{ outline:none; border-color:var(--accent); }
+  .form-note{ font-size:12px; color:#6f6f80; text-align:center; }
+  .form-success{ display:none; text-align:center; padding:14px; font-weight:700; color:#0EA36F; }
+  @media(min-width:900px){ .apply-inner{ grid-template-columns:1fr .85fr; align-items:center; } }
+
+  footer{ padding:40px 0 30px; }
+  .footer-grid{ display:flex; flex-direction:column; gap:18px; }
+  .footer-links{ display:flex; flex-wrap:wrap; gap:18px; font-weight:600; font-size:14px; }
+  .footer-links a:hover{ color:var(--accent); }
+  .footer-contacts{ display:flex; flex-wrap:wrap; gap:16px; font-size:14px; color:var(--muted); }
+  .footer-contacts a:hover{ color:var(--accent); }
+  .footer-bottom{ margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px;}
+  @media(min-width:800px){ .footer-grid{ flex-direction:row; justify-content:space-between; align-items:flex-start; } }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <div class="logo">
+      <div class="logo-mark"><img src="juniors-logo.png" alt="juniors.ai"></div>
+      <div>juniors.ai<small>IT Startup Camp · by upkids</small></div>
+    </div>
+    <nav class="nav-links">
+      <a href="#problem">Это про тебя?</a>
+      <a href="#diagnostics">Диагностика</a>
+      <a href="#tracks">Треки</a>
+      <a href="#program">Программа</a>
+      <a href="#team">Команда</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <a href="#apply" class="btn btn-primary nav-cta">Записаться →</a>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+      <a href="#problem">Это про тебя?</a>
+      <a href="#diagnostics">Диагностика</a>
+      <a href="#tracks">Треки</a>
+      <a href="#program">Программа</a>
+      <a href="#team">Команда</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#apply" class="btn btn-primary">Записаться →</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">📍 Бишкек · Каникулы 2026 · 14–18 лет</span>
+      <h1>Сделай свой <span>AI-продукт</span> за 2 недели — и запусти его живым людям</h1>
+      <p class="sub">juniors.ai — интенсив, где ты проходишь весь путь фаундера: от идеи до работающего продукта на vibe coding и питча на Demo Day. Никакого «курса кодинга» — только реальный продукт, который останется с тобой навсегда.</p>
+      <div class="hero-ctas">
+        <a href="#apply" class="btn btn-primary">Записаться →</a>
+        <a href="#program" class="btn btn-ghost">Смотреть программу</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>10 дней</b><span>4 часа в день, офлайн</span></div>
+        <div class="stat"><b>14–18 лет</b><span>25–30 человек в потоке</span></div>
+        <div class="stat"><b>3 трека</b><span>Apps · Games · AI-агенты</span></div>
+        <div class="stat"><b>8 ролей</b><span>примеришь на себе</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="badge-live"><i></i>Demo Day · день 10</span>
+      <div class="window">
+        <div class="window-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>founder-arc.log</span></div>
+        <div class="window-body">
+          <div><span class="l2">$</span> whoami</div>
+          <div>ты → фаундер</div>
+          <div>&nbsp;</div>
+          <div><span class="l1">✓</span> идея сформулирована</div>
+          <div><span class="l1">✓</span> MVP собран (vibe coding)</div>
+          <div><span class="l1">✓</span> задеплоено, live-ссылка</div>
+          <div><span class="l1">✓</span> первые пользователи, фидбек</div>
+          <div><span class="l2">…</span> питч на Demo Day <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem" id="problem">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Узнаёшь себя?</span>
+      <h2 style="margin-top:10px;">Это случается с большинством</h2>
+    </div>
+    <div class="pain-grid reveal">
+      <div class="pain-card"><span class="ic">📱</span>Залипаешь в телефоне, а хочется сделать что-то реальное</div>
+      <div class="pain-card"><span class="ic">🤷</span>Не понимаешь, кем хочешь стать и что делать дальше</div>
+      <div class="pain-card"><span class="ic">📂</span>Портфолио пустое — нечего показать при поступлении</div>
+      <div class="pain-card"><span class="ic">🙈</span>Стесняешься высказываться и выступать перед людьми</div>
+      <div class="pain-card"><span class="ic">🎡</span>Перепробовал(а) кучу кружков, а толку так и нет</div>
+      <div class="pain-card"><span class="ic">💡</span>Хочешь сделать свой продукт, но не знаешь, с чего начать</div>
+    </div>
+  </div>
+</section>
+
+<section id="diagnostics">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">🧭 Не просто лагерь</span>
+      <h2 style="margin-top:14px;">Тут тебе помогут понять, в чём ты реально силён</h2>
+      <p>За кэмпом стоит команда психологов и профориентологов juniors.ai — она работает с твоими талантами и сильными сторонами на каждом этапе, а не только в анкете.</p>
+    </div>
+    <div class="diag-flow reveal">
+      <div class="diag-card">
+        <span class="step">До кэмпа</span>
+        <h3>Узнаёшь себя и выбираешь трек</h3>
+        <p>Пройдёшь диагностику: сильные стороны, склонности, интересы. Куратор поможет выбрать трек — Apps, Games или AI-агенты. Осознанный выбор, а не рандом.</p>
+      </div>
+      <div class="diag-card">
+        <span class="step">Во время кэмпа</span>
+        <h3>Проявляешь себя в деле</h3>
+        <p>10 дней настоящей работы. Психолог и куратор наблюдают, как ты держишь удар, когда продукт ломается, какая у тебя роль в команде и что тебя реально зажигает.</p>
+      </div>
+      <div class="diag-card">
+        <span class="step">После кэмпа</span>
+        <h3>Получаешь карту развития</h3>
+        <p>Не скучная справка, а честный разбор: что подтвердилось, что открылось нового и какой следующий шаг стоит сделать.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tracks">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">День 1 — выбираешь трек</span>
+      <h2 style="margin-top:10px;">Три трека на выбор — выбери свой</h2>
+      <p>Выбор не случайный: он связан с твоей диагностикой сильных сторон. Это то, чего нет у других IT-лагерей.</p>
+    </div>
+    <div class="tracks-grid reveal">
+      <div class="track-card track-apps">
+        <span class="tag">Трек 01</span>
+        <h3>Apps</h3>
+        <p>Полезные приложения и сервисы — от идеи до рабочего продукта с реальными пользователями и живой ссылкой.</p>
+        <span class="big-emoji">📱</span>
+      </div>
+      <div class="track-card track-games">
+        <span class="tag">Трек 02</span>
+        <h3>Games</h3>
+        <p>Игровые механики и интерактивный опыт — продукт, в который действительно хочется играть.</p>
+        <span class="big-emoji">🎮</span>
+      </div>
+      <div class="track-card track-ai">
+        <span class="tag">Трек 03</span>
+        <h3>AI-агенты</h3>
+        <p>Умные помощники и автоматизации на базе AI — самый «взрослый» и актуальный трек кэмпа.</p>
+        <span class="big-emoji">🤖</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roles" style="background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">👥 8 ролей за 2 недели</span>
+      <h2 style="margin-top:14px;">Собирая один продукт — примеришь всю продуктовую команду</h2>
+      <p>Не теория, а роль на себе: от фаундера, который видит проблему, до тестировщика, который ловит баги перед запуском.</p>
+    </div>
+    <div class="roles-grid reveal">
+      <div class="role-card"><span class="num">01</span><h4>Фаундер</h4><p>Видишь проблему, формулируешь идею и ценность, уверенно питчишь.</p></div>
+      <div class="role-card"><span class="num">02</span><h4>Продакт-менеджер</h4><p>Говоришь с пользователями, формулируешь MVP, расставляешь приоритеты.</p></div>
+      <div class="role-card"><span class="num">03</span><h4>Проектный менеджер</h4><p>Планируешь сроки, распределяешь задачи, доводишь проект до результата.</p></div>
+      <div class="role-card"><span class="num">04</span><h4>Разработчик</h4><p>Собираешь рабочий продукт с AI-инструментами и деплоишь его в интернет.</p></div>
+      <div class="role-card"><span class="num">05</span><h4>UX/UI-дизайнер</h4><p>Проектируешь интерфейс, делаешь продукт понятным с первого экрана.</p></div>
+      <div class="role-card"><span class="num">06</span><h4>Аналитик данных</h4><p>Подключаешь аналитику, читаешь метрики, предлагаешь улучшения по цифрам.</p></div>
+      <div class="role-card"><span class="num">07</span><h4>Маркетолог</h4><p>Формулируешь, для кого продукт, и находишь первых пользователей.</p></div>
+      <div class="role-card"><span class="num">08</span><h4>Тестировщик</h4><p>Ловишь баги и сломанные сценарии глазами реального пользователя.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="program">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">27 июля – 7 августа · Пн–Пт, 10:30–14:30</span>
+      <h2 style="margin-top:10px;">Твоя founder-арка по дням</h2>
+      <p>Неделя 1 — Build: идея, MVP, дизайн, первые AI-функции. Неделя 2 — Launch & Demo: запуск живым пользователям, фидбек, Demo Day.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="week-label">Неделя 1 — Build</div>
+      <div class="tl-item"><div class="tl-dot">01</div><div class="tl-card"><span class="date">27 июля, пн</span><h4>Знакомство и профориентация</h4><p>Открытие кэмпа, командные игры, первые тесты с психологом Кариной, обзор трёх треков и AI-инструментов.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">02</div><div class="tl-card"><span class="date">28 июля, вт</span><h4>От идеи до MVP</h4><p>Теория продакт-менеджмента: проблема vs идея, customer development, MVP. Практика — питч идей и фидбек.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">03</div><div class="tl-card"><span class="date">29 июля, ср</span><h4>UX/UI + введение в vibe coding</h4><p>Дизайн-мышление, user journey, wireframes. Первый опыт vibe coding вместе с ментором Данияром.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">04</div><div class="tl-card"><span class="date">30 июля, чт</span><h4>Два личных продукта + деплой</h4><p>Сборка двух личных продуктов на vibe coding, деплой в интернет, презентация и фидбек от группы.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">05</div><div class="tl-card"><span class="date">31 июля, пт</span><h4>Команда и выбор продукта</h4><p>Формирование команд, голосование за продукт для Demo Day, распределение ролей, первый брейншторм.</p></div></div>
+
+      <div class="week-label">Неделя 2 — Launch &amp; Demo</div>
+      <div class="tl-item"><div class="tl-dot">06</div><div class="tl-card"><span class="date">3 августа, пн</span><h4>Payments и запуск</h4><p>Подключение Stripe mock payment flow, запуск командного продукта, сбор первого фидбека от пользователей.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">07</div><div class="tl-card"><span class="date">4 августа, вт</span><h4>Фидбек от продакт-менеджера</h4><p>Презентация командных продуктов, детальный разбор от PM, доработка по фидбеку.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">08</div><div class="tl-card"><span class="date">5 августа, ср</span><h4>Публичные выступления</h4><p>Тренинг Карины по выступлениям, сборка структуры презентации: проблема — решение — продукт — демо.</p></div></div>
+      <div class="tl-item"><div class="tl-dot">09</div><div class="tl-card"><span class="date">6 августа, чт</span><h4>Pre Demo Day</h4><p>Полный прогон питча — 5 минут питч + 3 минуты вопросы. Спикер от Nextleaders про поступление за рубеж.</p></div></div>
+      <div class="tl-item demo"><div class="tl-dot">🚀</div><div class="tl-card"><span class="date">7 августа, пт</span><h4>DEMO DAY</h4><p>Питчи команд перед жюри и зрителями, награждение, вручение сертификатов и личных характеристик от психолога.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">До / После</span>
+      <h2 style="margin-top:10px;">Что изменится за 2 недели</h2>
+    </div>
+    <div class="split reveal">
+      <div class="before">
+        <h3>До кэмпа</h3>
+        <ul>
+          <li><b>✗</b> Не знаешь свои сильные стороны</li>
+          <li><b>✗</b> Боишься, что что-то сломаешь и не справишься</li>
+          <li><b>✗</b> Стесняешься выступать перед людьми</li>
+          <li><b>✗</b> Не понимаешь, кем хочешь стать</li>
+          <li><b>✗</b> Портфолио пустое</li>
+        </ul>
+      </div>
+      <div class="after">
+        <h3>После кэмпа</h3>
+        <ul>
+          <li><b>✓</b> Знаешь свои таланты и следующий шаг</li>
+          <li><b>✓</b> Спокойно проходишь через ошибки и фрустрацию</li>
+          <li><b>✓</b> Уверенно питчишь перед жюри</li>
+          <li><b>✓</b> Примерил(а) 8 ролей продуктовой команды</li>
+          <li><b>✓</b> Живой продукт и код в своём GitHub</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">✨ Почему это не курс кодинга</span>
+      <h2 style="margin-top:14px;">Что ты получишь на выходе</h2>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card"><span class="ic">🔗</span><h4>Live-продукт по ссылке</h4><p>Настоящий стек стартапов — не игрушечный. Продукт остаётся с тобой навсегда, доступен по ссылке.</p></div>
+      <div class="feat-card"><span class="ic">💼</span><h4>Проект в портфолио</h4><p>Код в твоём собственном GitHub — весомый аргумент для вуза или стажировки.</p></div>
+      <div class="feat-card"><span class="ic">🎤</span><h4>Опыт публичных выступлений</h4><p>Питч перед жюри и зрителями на Demo Day, с наградами.</p></div>
+      <div class="feat-card"><span class="ic">🧠</span><h4>Product thinking</h4><p>MVP, customer development, product-market fit, unit-экономика — не в теории, а в деле.</p></div>
+      <div class="feat-card"><span class="ic">📋</span><h4>Отчёт от психолога</h4><p>Разбор твоих сильных сторон и следующий шаг маршрута развития.</p></div>
+      <div class="feat-card"><span class="ic">🤝</span><h4>Командный опыт</h4><p>Настоящая командная работа с распределением ролей и общей целью.</p></div>
+    </div>
+    <div style="margin-top:34px;" class="reveal">
+      <h3 style="font-size:18px; margin-bottom:14px;">+ 12 навыков будущего</h3>
+      <div class="chips">
+        <span class="chip">Критическое мышление</span>
+        <span class="chip">Креативность</span>
+        <span class="chip">Решение проблем</span>
+        <span class="chip">Продуктовое мышление</span>
+        <span class="chip">Работа с данными</span>
+        <span class="chip">Работа с AI</span>
+        <span class="chip">Цифровая грамотность</span>
+        <span class="chip">Коммуникация</span>
+        <span class="chip">Командная работа</span>
+        <span class="chip">Публичные выступления</span>
+        <span class="chip">Самостоятельность</span>
+        <span class="chip">Адаптивность</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Формат</span>
+      <h2 style="margin-top:10px;">Как устроен кэмп</h2>
+    </div>
+    <div class="format-table reveal">
+      <div class="format-row"><span class="k">Длительность</span><span class="v">2 недели, 10 дней, офлайн, 4 часа в день, с понедельника по пятницу</span></div>
+      <div class="format-row"><span class="k">Когда</span><span class="v">Каникулы — лето / осень / зима, 3–4 потока в год</span></div>
+      <div class="format-row"><span class="k">Возраст</span><span class="v">14–18 лет</span></div>
+      <div class="format-row"><span class="k">Группа</span><span class="v">25–30 человек</span></div>
+      <div class="format-row"><span class="k">Условие</span><span class="v">Нужен свой ноутбук</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">👨‍👩‍👧 Команда</span>
+      <h2 style="margin-top:14px;">Кто будет с тобой рядом</h2>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card"><div class="avatar">К</div><h4>Карина</h4><div class="role">Психолог, профориентолог</div><p>Поможет разобраться, в чём ты силён(льна), подготовит к выступлению и составит для тебя финальный отчёт.</p></div>
+      <div class="team-card"><div class="avatar">Д</div><h4>Данияр</h4><div class="role">Ментор по vibe coding</div><p>Научит собирать и запускать продукт с помощью AI-инструментов, даст технический фидбек по твоему MVP.</p></div>
+      <div class="team-card"><div class="avatar">PM</div><h4>Product-менеджер</h4><div class="role">Бермет Кошоева / Эльберат</div><p>Поможет сформулировать MVP и даст продуктовый фидбек твоему готовому проекту.</p></div>
+      <div class="team-card"><div class="avatar">К</div><h4>Куратор</h4><div class="role">Фасилитатор кэмпа</div><p>Проведёт тебя через весь кэмп день за днём, всегда на связи и рядом.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap" style="max-width:760px;">
+    <div class="section-head reveal">
+      <span class="kicker">Частые вопросы</span>
+      <h2 style="margin-top:10px;">То, что обычно спрашивают</h2>
+    </div>
+    <div class="reveal">
+      <div class="faq-item">
+        <div class="faq-q"><span>Я никогда не программировал(а) — это проблема?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Нет. Мотор кэмпа — vibe coding: ты собираешь продукт с помощью AI-инструментов, а не пишешь код с нуля. Опыт программирования не нужен.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Как выбрать трек — Apps, Games или AI-агенты?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>В день 1 куратор поможет, опираясь на твою диагностику сильных сторон. Выбор осознанный, а не наугад.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Что я получу после кэмпа?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Живой продукт по ссылке, код в своём GitHub и честный разбор твоих сильных сторон от психолога.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Что нужно взять с собой?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Свой ноутбук — это единственное обязательное условие для участия.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Что будет с продуктом после кэмпа?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Он останется live по ссылке навсегда, а код — в твоём личном GitHub. Можно использовать в портфолио для вуза или стажировки.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="apply">
+  <div class="wrap">
+    <div class="apply reveal">
+      <div class="apply-inner">
+        <div>
+          <span class="eyebrow">🚀 Места ограничены</span>
+          <h2 style="margin-top:16px;">Готов(а) запустить свой первый AI-продукт?</h2>
+          <p class="sub">Оставь заявку — куратор свяжется, расскажет про ближайший поток и поможет выбрать трек.</p>
+        </div>
+        <form class="form" id="applyForm">
+          <input type="text" placeholder="Твоё имя" required>
+          <input type="text" placeholder="Твой возраст" required>
+          <input type="tel" placeholder="Номер телефона (свой или родителей)" required>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Отправить заявку →</button>
+          <div class="form-success" id="formSuccess">✅ Заявка принята! Скоро с тобой свяжутся.</div>
+          <div class="form-note">Нажимая «Отправить», ты соглашаешься на обработку данных</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="logo">
+        <div class="logo-mark"><img src="juniors-logo.png" alt="juniors.ai"></div>
+        <div>juniors.ai<small>IT Startup Camp · by upkids</small></div>
+      </div>
+      <div class="footer-links">
+        <a href="#problem">Это про тебя?</a>
+        <a href="#tracks">Треки</a>
+        <a href="#program">Программа</a>
+        <a href="#team">Команда</a>
+        <a href="#faq">Вопросы</a>
+      </div>
+      <div class="footer-contacts">
+        <a href="https://wa.me/996503844311">💬 WhatsApp</a>
+        <a href="https://instagram.com/juniors.ai">📷 Instagram: @juniors.ai</a>
+        <a href="tel:+996503844311">📞 +996 503 844 311</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>juniors.ai © 2026</span>
+      <span>IT Startup Camp · факультет IT upkids</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-a').style.maxHeight = null;
+      });
+      if(!isOpen){ item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+    });
+  });
+
+  const applyForm = document.getElementById('applyForm');
+  applyForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    applyForm.querySelectorAll('input, button').forEach(el => el.style.display = 'none');
+    document.getElementById('formSuccess').style.display = 'block';
+  });
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
